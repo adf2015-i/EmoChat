@@ -21,8 +21,8 @@ CREATE TABLE `users` (
 --  Records of `users`
 -- ----------------------------
 BEGIN;
-INSERT INTO `users` VALUES ('testid1', 'テスト1', 'testpass1',NOW());
-INSERT INTO `users` VALUES ('testid2', 'テスト2', 'testpass2', NULL, NOW());
+INSERT INTO `users` (user_id, name, password, create_date) VALUES ('testid1', '太郎', 'testpass1', NOW());
+INSERT INTO `users` (user_id, name, password, create_date) VALUES ('testid2', '花子', 'testpass2', NOW());
 COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
