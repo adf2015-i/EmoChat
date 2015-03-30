@@ -40,6 +40,13 @@ $arr[] = array(
     "time"=>$now
 );
 // image path
+// TODO: user2 は bot
+$arr[] = array(
+    "user_id"=>$post["user2"],
+    "emotion"=>1,
+    "message"=> '「' . $post["message"] . '」...だと！！',
+    "time"=>$now
+);
 
 $json = json_encode($arr);
 
