@@ -30,33 +30,35 @@ catch(PDOException $e) {
 $sql = "SELECT * FROM chat_logs WHERE (user1= '{$post['user1']}' AND user2 = '{$post['user2']}') OR (user1= '{$post['user2']}' AND user2 = '{$post['user1']}')";
 $stmt = $dbh->query($sql);
 $res = $stmt->fetch();
-$arr = json_decode($res["log"] ?: array(),TRUE);
+$arr = json_decode($res["log"] ?: array(), TRUE);
 $now = date("Y-m-d H:i:s");
 
 $arr[] = array(
     "user_id"=>$post["user1"],
-    "emotion"=>1,
+    "emotion"=>recognizeUserEmotion($post['message']),
     "message"=>$post["message"],
     "time"=>$now
 );
 // image path
 // TODO: user2 は bot
+$message_patterns = array(
+    '進捗どうですか？',
+    '...',
+    '本気で言ってる？',
+    '頑張って'
+);
+
 $arr[] = array(
     "user_id"=>$post["user2"],
-    "emotion"=>1,
-    "message"=> '「' . $post["message"] . '」...だと！！',
+    "emotion"=>recognizeUserEmotion(""),
+    "message"=> $message_patterns[count($arr) % 4],
     "time"=>$now
 );
 
 $json = json_encode($arr);
 
-$sql = "UPDATE chat_logs SET log='{$json2}',last_date='{$now}' WHERE id=".$res['id'];
+$sql = "UPDATE chat_logs SET log='{$json}',last_date='{$now}' WHERE id=".$res['id'];
 $stmt = $dbh->query($sql);
-foreach ($arr as &$e) {
-    $emo = recognizeUserEmotion($e['message']);
-//    $e['image_url'] = "./img/{$post["user1"]}/{$emo}";
-    $e['emotion'] = $emo;
-}
 
 header("Content-Type: application/json; charset=utf-8");
-echo json_encode($arr);
+echo $json;
