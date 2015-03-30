@@ -24,5 +24,6 @@ $arr[] = array(
     "time"=>$now
 );
 $json = json_encode($arr);
-$sql = "UPDATE chat_logs SET log={$json},last_date=NOW() WHERE id = ".$res['id'];
+$sql = "UPDATE chat_logs SET log='{$json}',last_date='{$now}' WHERE id=".$res['id'];
+$stmt = $dbh->query($sql);
 echo $json;
