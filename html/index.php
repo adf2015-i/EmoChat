@@ -1,9 +1,9 @@
 <?php
 /**
- * user1, user2 ,message
+ * user1とuser2に対してのチャットのログをゲット
+ * json->user_id,emotion,icon,message,time
  */
 require_once ('../data/config.php');
-require_once ('./EmotionRecogtion.php');
 $post = filter_input_array(INPUT_POST);
 try {
     $dbh = new PDO(DSN, DBUSER, DBPASSWORD);
@@ -12,49 +12,53 @@ catch(PDOException $e) {
     print ('Error:' . $e->getMessage());
     die();
 }
-
-// TODO: emotion 判定
-//　$date = date('Ymd-His');
-//　$file_name = "{$user_name}-{$date}.csv";
-//　$dirpath = "profile-iOS/";
-//　
-//　$filepath = $dirpath . $file_name;
-//　$fp = fopen($filepath, "w");
-//　foreach ($datas as $data) {
-//　    fputcsv($fp, $data);
-//　}
-//　fclose($fp);
-// recognizeEmotion("profile-iOS", $filepath, $post['user1'], "iOS");
-
-$sql = "SELECT * FROM chat_logs WHERE (user1= '{$post['user1']}' AND user2 = '{$post['user2']}') OR (user1= '{$post['user2']}' AND user2 = '{$post['user1']}')";
+$sql = "SELECT * FROM chat_logs WHERE (user1= 'testid1' AND user2 = 'testid2')";
 $stmt = $dbh->query($sql);
-$res = $stmt->fetch();
-$arr = json_decode($res["log"] ?: array(), TRUE);
-$now = date("Y-m-d H:i:s");
+$log = json_decode($stmt->fetch()['log'] ?: json_encode(array()), TRUE);
 
-$arr[] = array(
-    "user_id"=>$post["user1"],
-    "emotion"=>recognizeUserEmotion($post['message']),
-    "message"=>$post["message"],
-    "time"=>$now
-);
-// image path
-// TODO: user2 は bot
-$message_patterns = array(
-    '進捗どうですか？',
-    '...',
-    '本気で言ってる？',
-    '頑張って'
-);
+?>
 
-$arr[] = array(
-    "user_id"=>$post["user2"],
-    "emotion"=>recognizeUserEmotion(""),
-    "message"=> $message_patterns[count($arr) / 2 % 4],
-    "time"=>$now
-);
+<!DOCTYPE html>
+<meta charset="UTF-8">
 
-$json = json_encode($arr);
+<style>
+.com {
+  width: 50%;
+  background: #0D08B0;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+  height: 200px;
+  color: white;
+}
+.com h3 {
+  font-size: 40px;
+  margin: 0;
+}
+.com img {
+    width: 100px;
+    height: 100px;
+    float: left;
+    border-radius: 10px;
+}
+.com.testid1 {
+    float:right;
+    background: #08D1E2;
+}
+br.c {
+clear: both;
+}
 
-$sql = "UPDATE chat_logs SET log='{$json}',last_date='{$now}' WHERE id=".$res['id'];
-$stmt = $dbh->query($sql);
+</style>
+<title>EMOチャット</title>
+
+
+<?php foreach($log as $l) { ?>
+<br class="c">
+<div class='com <?= $l['user_id'] ?>'>
+<h3><?= $l['user_id'] ?></h3>
+<p><?= $l['message'] ?></p>
+<img src="images/icon/<?= $l['user_id']?>/<?= $l['emotion']?>">
+</div>
+<?php } ?>
+
