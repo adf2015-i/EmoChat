@@ -181,16 +181,35 @@
 
 		if($inputDelRatio >= 0.3)
 		{
-			return "confused";
+			return "confused.png";
 		}
 
 		else if($aveSdRatio[0] >= 1.5)
 		{
-			return "exhausted";
+			return "exhausted.png";
 		}
 
-		return "normal";
+		return "normal.png";
 	}
 
-	print recognizeEmotion("profile-iOS", "test/takahashi-20150330-091633.csv", "takahashi", "iOS");
+	function recognizeUserEmotion($message)
+	{
+		$emotion = array(':w' => 'smile.png',
+			':a' => 'angry.png',
+			':c' => 'confused.png',
+			':e' => 'exhausted.png',
+			':n' => 'nice.png',
+			':s' => 'smile.png',
+			':b' => 'bitterlaugh.png');
+
+		$suffix = substr($message, -2);
+
+		if(isset($emotion[$suffix]))
+		{
+			return $emotion[$suffix];
+		}
+
+		return "normal.png";
+	}
+	//print recognizeEmotion("profile-iOS", "test/testid1-20150330-091633.csv", "testid1", "iOS");
 ?>
