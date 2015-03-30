@@ -15,5 +15,6 @@ catch(PDOException $e) {
 }
 $sql = "SELECT * FROM chat_logs WHERE (user1= '{$post['user1']}' AND user2 = '{$post['user2']}') OR (user1= '{$post['user2']}' AND user2 = '{$post['user1']}')";
 $stmt = $dbh->query($sql);
-$res = $stmt->fetch() ?: array();
-echo $res["log"];
+$log = $stmt->fetch()['log'] ?: array();
+header("Content-Type: application/json; charset=utf-8");
+echo $log;
