@@ -17,12 +17,15 @@ $stmt = $dbh->query($sql);
 $res = $stmt->fetch();
 $arr = json_decode($res["log"] ?: array(),TRUE);
 $now = date("Y-m-d H:i:s");
+// TODO: emotion 判定
 $arr[] = array(
     "user_id"=>$post["user1"],
     "emotion"=>1,
     "message"=>$post["message"],
     "time"=>$now
 );
+
 $json = json_encode($arr);
 $sql = "UPDATE chat_logs SET log={$json},last_date=NOW() WHERE id = ".$res['id'];
+header("Content-Type: application/json; charset=utf-8");
 echo $json;
