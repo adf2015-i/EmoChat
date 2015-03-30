@@ -50,7 +50,7 @@ $message_patterns = array(
 $arr[] = array(
     "user_id"=>$post["user2"],
     "emotion"=>recognizeUserEmotion(""),
-    "message"=> $message_patterns[count($arr) % 4],
+    "message"=> $message_patterns[count($arr) / 2 % 4],
     "time"=>$now
 );
 
