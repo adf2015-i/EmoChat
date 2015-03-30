@@ -1,21 +1,28 @@
 <?php
 /**
- * user_id message stroke
+ * user1, user2 ,message
  */
-include_once '../data/header.tpl';
+require_once ('../data/config.php');
+$post = filter_input_array(INPUT_POST);
+try {
+    $dbh = new PDO(DSN, DBUSER, DBPASSWORD);
+}
+catch(PDOException $e) {
+    print ('Error:' . $e->getMessage());
+    die();
+}
+
 $sql = "SELECT * FROM chat_logs WHERE (user1= '{$post['user1']}' AND user2 = '{$post['user2']}') OR (user1= '{$post['user2']}' AND user2 = '{$post['user1']}')";
 $stmt = $dbh->query($sql);
-$json = $stmt[0]["log"];
-$arr = json_decode($json,TRUE);
+$res = $stmt->fetch();
+$arr = json_decode($res["log"] ?: array(),TRUE);
 $now = date("Y-m-d H:i:s");
 $arr[] = array(
-    "user_id"=>$post["user_id"],
+    "user_id"=>$post["user1"],
     "emotion"=>1,
-    "icon"=>"example.com",
     "message"=>$post["message"],
     "time"=>$now
 );
 $json = json_encode($arr);
-$sql = "INSERT INTO chat_logs (log) VALUES ({$json}) WHERE id = ".$stml[0]['id'];
+$sql = "UPDATE chat_logs SET log={$json},last_date=NOW() WHERE id = ".$res['id'];
 echo $json;
-
