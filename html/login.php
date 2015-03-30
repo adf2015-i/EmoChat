@@ -20,6 +20,7 @@ if($result){
     //ログイン成功時、友達リストのJSONファイル生成
     $sql = "SELECT * FROM users";
     $stmt = $dbh->query($sql);
+    $res = $stmt->fetch();
     $arr = array();
     foreach($stmt as $val){
         $arr[] = array(
